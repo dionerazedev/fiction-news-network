@@ -1,0 +1,24 @@
+{
+  "name": "The Paw Post",
+  "tagline": "Invented animal stories worth sharing",
+  "url": "https://thepawpost.example",
+  "contactEmail": "",
+  "label": {
+    "tag": "FICTION",
+    "line": "This story is fiction.",
+    "imageCaption": "AI-generated illustration"
+  },
+  "categories": [
+    { "slug": "rescues", "name": "Rescues", "blurb": "Close calls, brave strangers and animals who made it home." },
+    { "slug": "pet-heroes", "name": "Pet Heroes", "blurb": "Ordinary pets doing remarkable things." },
+    { "slug": "strange-creatures", "name": "Strange Creatures", "blurb": "Animals with habits nobody can explain." },
+    { "slug": "wild-discoveries", "name": "Wild Discoveries", "blurb": "Things found in the woods, the water and the backyard." },
+    { "slug": "lucky-finds", "name": "Lucky Finds", "blurb": "Windfalls, treasures and second chances." }
+  ],
+  "authors": [
+    { "slug": "maggie-lund", "name": "Maggie Lund", "role": "Rescues and Pet Heroes", "bio": "Maggie Lund is a fictional house persona for The Paw Post's rescue stories. She is not a real person, and the stories under her name are invented." },
+    { "slug": "theo-varga", "name": "Theo Varga", "role": "Strange Creatures", "bio": "Theo Varga is a fictional house persona who covers animals with unusual habits. He is not a real person, and the stories under his name are invented." },
+    { "slug": "rosa-finch", "name": "Rosa Finch", "role": "Wild Discoveries", "bio": "Rosa Finch is a fictional house persona for stories about things found outdoors. She is not a real person, and the stories under her name are invented." },
+    { "slug": "june-abernathy", "name": "June Abernathy", "role": "Lucky Finds", "bio": "June Abernathy is a fictional house persona for stories about windfalls and second chances. She is not a real person, and the stories under her name are invented." }
+  ]
+}

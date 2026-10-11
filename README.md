@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Paw Post
 
-## Getting Started
+Site 1 of the fiction news network: invented animal stories with a modern viral-news look. Every story, person and place is fiction, and every page, card and share image says so.
 
-First, run the development server:
+This is the site only. Stories are Markdown files in `content/stories/`; the AI writing and image engine comes later.
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm run start
+npm run check -- http://localhost:3000   # checks links, fiction labels and 404s on a running site
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requires Node 20 or newer.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Where things live
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `content/site.json`: site name, fiction label wording, categories and the fictional author personas
+- `content/stories/*.md`: one story per file (title, dek, category, author, publishedAt, animal, imageAlt)
+- `public/images/stories/{slug}.webp|jpg|png`: story illustrations. A story without one shows a temporary colour panel.
+- `src/app/`: pages (home, story, category, author, archive, search, about, editorial policy, contact, privacy), share images, RSS, sitemap
+- `src/proxy.ts`: returns a real 404 for unknown story, category and author links
+- `DESIGN.md` and `PRODUCT.md`: the design system and product rules
 
-## Learn More
+## Before going public
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `robots.ts` blocks all crawlers and the layout sets `noindex` while this is a preview. Remove both at launch.
+- Set the real domain in `content/site.json` (`url`) and a contact address (`contactEmail`).

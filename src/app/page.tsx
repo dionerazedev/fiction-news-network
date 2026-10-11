@@ -1,69 +1,103 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Masthead } from "@/components/Masthead";
+import { SiteFooter } from "@/components/SiteFooter";
+import { LeadStory, StoryRow, StoryTile } from "@/components/StoryCards";
+import { site } from "@/lib/site";
+import { getAllStories, getLatestDelivery, getStoriesByCategory } from "@/lib/stories";
 
-export default function Home() {
+export default function HomePage() {
+  const delivery = getLatestDelivery();
+  const [lead, ...alsoToday] = delivery;
+  const shown = new Set(delivery.map((s) => s.slug));
+
+  const sections = site.categories
+    .map((category) => {
+      const stories = getStoriesByCategory(category.slug).filter((s) => !shown.has(s.slug)).slice(0, 3);
+      stories.forEach((s) => shown.add(s.slug));
+      return { category, stories };
+    })
+    .filter((s) => s.stories.length > 0);
+
+  const river = getAllStories().filter((s) => !shown.has(s.slug));
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <>
+      <Masthead current="home" />
+      <main id="main">
+        {lead && (
+          <section className="today" aria-labelledby="today-title">
+            <div className="wrap today__grid">
+              <h1 id="today-title" className="sr-only">
+                Today&apos;s delivery
+              </h1>
+              <LeadStory story={lead} />
+              {alsoToday.length > 0 && (
+                <aside className="today__aside" aria-labelledby="also-title">
+                  <h2 id="also-title" className="today__aside-title">
+                    Also in today&apos;s delivery
+                  </h2>
+                  <div className="today__list">
+                    {alsoToday.map((s) => (
+                      <StoryRow key={s.slug} story={s} withTime />
+                    ))}
+                  </div>
+                </aside>
+              )}
+            </div>
+          </section>
+        )}
+
+        {sections.map(({ category, stories }, i) => {
+          const [first, ...rest] = stories;
+          return (
+            <section
+              key={category.slug}
+              className={`route-section${i % 2 ? " route-section--flip" : ""}`}
+              data-route={category.slug}
+              aria-labelledby={`route-${category.slug}`}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+              <div className="wrap">
+                <div className="route-section__head">
+                  <h2 id={`route-${category.slug}`} className="route-section__name">
+                    {category.name}
+                  </h2>
+                  <p className="route-section__blurb">{category.blurb}</p>
+                  <Link href={`/category/${category.slug}`} className="route-section__all">
+                    All {category.name} <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                </div>
+                <div className="route-section__grid">
+                  <StoryTile story={first} size="lg" />
+                  {rest.length > 0 && (
+                    <div className="route-section__rows">
+                      {rest.map((s) => (
+                        <StoryRow key={s.slug} story={s} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          );
+        })}
+
+        {river.length > 0 && (
+          <section className="river" aria-labelledby="river-title">
+            <div className="wrap">
+              <h2 id="river-title" className="section-title">
+                Earlier deliveries
+              </h2>
+              <div className="river__list">
+                {river.map((s) => (
+                  <StoryRow key={s.slug} story={s} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
-    </div>
+      <SiteFooter />
+    </>
   );
 }
